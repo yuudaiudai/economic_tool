@@ -29,8 +29,8 @@ cpi_data = get_cpi_data(API_KEY)
 latest_cpi, cpi_change, cpi_judgment, cpi_trend = analyze_cpi(cpi_data)
 
 if cpi_judgment != "分析不可":
-    print(f"CPI前年比：{latest_cpi:.2f}%")
-    print(f"CPI3か月比：{cpi_change:.2f}%ポイント")
+    print(f"前年比ベースでのCPI：{latest_cpi:.2f}%")
+    print(f"3か月前比ベースでのCPI：{cpi_change:.2f}%ポイント")
     print(f"CPI状況：{cpi_judgment}")
     print(f"CPIトレンド：{cpi_trend}")
     
@@ -99,8 +99,8 @@ rate_data = get_rate_data(API_KEY)
 
 if rate_judgment != "分析不可":
     print(f"政策金利：{latest_rate:.2f}%")
-    print(f"1年前との金利差：{rate_change:.2f}%ポイント")
-    print(f"3か月前との金利差：{rate_change_3m:.2f}%ポイント")
+    print(f"前年比ベースの金利差：{rate_change:.2f}%ポイント")
+    print(f"3か月前比ベースの金利差：{rate_change_3m:.2f}%ポイント")
     print(f"金利スコア：{rate_score}")
     print(f"金融政策：{rate_judgment}")
     

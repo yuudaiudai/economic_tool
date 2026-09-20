@@ -28,9 +28,9 @@ def analyze_investment(
         cpi_score -= 1
 
     # CPIのトレンド
-    if cpi_trend == "インフレ鈍化傾向":
+    if cpi_trend == "インフレ傾向":
         cpi_score += 1
-    elif cpi_trend == "インフレ加速傾向":
+    elif cpi_trend == "ディスインフレ傾向":
         cpi_score -= 1
 
     score += cpi_score
