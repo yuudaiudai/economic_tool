@@ -1,43 +1,76 @@
-def analyze_investment(cpi_judgment, employment_judgment, rate_judgment):
-    
+def analyze_investment(
+    cpi_judgment,
+    cpi_trend,
+    employment_judgment,
+    employment_trend,
+    rate_judgment
+):
+
+
+    # 入力値チェック
     if (
-    cpi_judgment == "分析不可"
-    or employment_judgment == "分析不可"
-    or rate_judgment == "分析不可"
+        cpi_judgment == "分析不可"
+        or employment_judgment == "分析不可"
+        or rate_judgment == "分析不可"
     ):
         return None, "分析不可"
 
     score = 0
 
+
     # CPI
+    cpi_score = 0
+
+    # CPIの状態
     if cpi_judgment == "インフレ":
-        score += 1
-    elif cpi_judgment == "中立水準":
-        pass
+        cpi_score += 1
     elif cpi_judgment == "ディスインフレ":
-        score -= 1
+        cpi_score -= 1
+
+    # CPIのトレンド
+    if cpi_trend == "インフレ鈍化傾向":
+        cpi_score += 1
+    elif cpi_trend == "インフレ加速傾向":
+        cpi_score -= 1
+
+    score += cpi_score
+    
 
     # 雇用
+    employment_score = 0
+
+    # 雇用の状態
     if employment_judgment == "雇用改善":
-        score += 1
-    elif employment_judgment == "雇用変化なし":
-        pass
+        employment_score += 1
     elif employment_judgment == "雇用悪化":
-        score -= 1
+        employment_score -= 1
+
+    # 雇用のトレンド
+    if employment_trend == "雇用改善傾向":
+        employment_score += 1
+    elif employment_trend == "雇用悪化傾向":
+        employment_score -= 1
+
+    score += employment_score
+    
 
     # 金利
-    if rate_judgment == "高金利":
-        score += 1
-    elif rate_judgment == "中立金利":
-        pass
-    elif rate_judgment == "低金利":
-        score -= 1
+    rate_score = 0
+
+    # 金融政策
+    if rate_judgment == "金融引き締め":
+        rate_score += 1
+    elif rate_judgment == "金融緩和":
+        rate_score -= 1
+        
+    score += rate_score
+
 
     # 総合判断
-    if score >= 2:
+    if score >= 4:
         overall_judgment = "好景気"
-    elif score <= -2:
-        overall_judgment = "悪景気"
+    elif score <= -4:
+        overall_judgment = "不景気"
     else:
         overall_judgment = "中立景気"
 

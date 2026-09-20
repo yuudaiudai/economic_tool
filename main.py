@@ -14,47 +14,113 @@ from cpi import analyze_cpi
 from employment import analyze_employment
 from official_rate import analyze_rate
 from overall_analyze import analyze_investment
+from graph import (
+    plot_cpi,
+    plot_employment,
+    plot_unemployment,
+    plot_hourly_earnings,
+    plot_rate
+)
 
 
 #CPI分析
 cpi_data = get_cpi_data(API_KEY)
 
-latest_cpi, cpi_judgment = analyze_cpi(cpi_data)
+latest_cpi, cpi_change, cpi_judgment, cpi_trend = analyze_cpi(cpi_data)
 
-if latest_cpi is not None:
+if cpi_judgment != "分析不可":
     print(f"CPI前年比：{latest_cpi:.2f}%")
+    print(f"CPI3か月比：{cpi_change:.2f}%ポイント")
     print(f"CPI状況：{cpi_judgment}")
+    print(f"CPIトレンド：{cpi_trend}")
+    
+    plot_cpi(
+    cpi_data,
+    cpi_judgment,
+    cpi_trend
+)
 else:
     print("CPI分析：分析不可")
 
 #雇用分析
-employment_data = get_employment_data(API_KEY)
+employment_data, unemployment_data, hourly_earnings = get_employment_data(API_KEY)
 
-latest_change, employment_judgment = analyze_employment(employment_data)
+(
+    latest_employment_yoy,
+    latest_unemployment_yoy,
+    latest_hourly_earnings_yoy,
+    employment_score,
+    employment_judgment,
+    employment_trend_score,
+    employment_trend
+) = analyze_employment(
+    employment_data,
+    unemployment_data,
+    hourly_earnings
+)
 
-if latest_change is not None:
-    print(f"雇用者数の前月比：{latest_change:.0f}千人")
+if employment_judgment != "分析不可":
+    print(f"雇用者数前年比：{latest_employment_yoy:.2f}%")
+    print(f"失業率前年比：{latest_unemployment_yoy:.2f}%")
+    print(f"平均時給前年比：{latest_hourly_earnings_yoy:.2f}%")
+    print(f"雇用スコア：{employment_score}")
     print(f"雇用状況：{employment_judgment}")
+    print(f"雇用トレンドスコア：{employment_trend_score}")
+    print(f"雇用トレンド：{employment_trend}")
+    
+    plot_employment(
+    employment_data,
+    employment_judgment,
+    employment_trend
+ )
+    plot_unemployment(
+    unemployment_data,
+    employment_judgment,
+    employment_trend
+)
+    plot_hourly_earnings(
+    hourly_earnings,
+    employment_judgment,
+    employment_trend
+)       
 else:
     print("雇用分析：分析不可")
 
 #金利分析
 rate_data = get_rate_data(API_KEY)
 
-latest_rate, rate_judgment = analyze_rate(rate_data)
+(
+    latest_rate,
+    rate_change,
+    rate_change_3m,
+    rate_score,
+    rate_judgment
+) = analyze_rate(rate_data)
 
-if latest_rate is not None:
+if rate_judgment != "分析不可":
     print(f"政策金利：{latest_rate:.2f}%")
-    print(f"金利状況：{rate_judgment}")
+    print(f"1年前との金利差：{rate_change:.2f}%ポイント")
+    print(f"3か月前との金利差：{rate_change_3m:.2f}%ポイント")
+    print(f"金利スコア：{rate_score}")
+    print(f"金融政策：{rate_judgment}")
+    
+    plot_rate(
+    rate_data,
+    rate_judgment
+)
 else:
     print("金利分析：分析不可")
+    
 
 #総合分析
 score, overall_judgment = analyze_investment(
     cpi_judgment,
+    cpi_trend,
     employment_judgment,
+    employment_trend,
     rate_judgment
 )
+
 
 print(f"総合スコア：{score}")
 print(f"総合分析：{overall_judgment}")

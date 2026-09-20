@@ -3,6 +3,12 @@ def analyze_cpi(cpi_data):
     if cpi_data is None or cpi_data.empty:
         return None, "分析不可"
 
+    cpi_data = cpi_data.dropna()
+
+    if len(cpi_data) < 13:
+        return None, "分析不可"
+
+    # CPI前年比
     cpi_yoy = cpi_data.pct_change(12) * 100
     cpi_yoy = cpi_yoy.dropna()
 
@@ -11,11 +17,25 @@ def analyze_cpi(cpi_data):
 
     latest_cpi = cpi_yoy.iloc[-1]
 
-    if latest_cpi > 3:
+    # CPI3か月前比
+    cpi_change = latest_cpi - cpi_yoy.iloc[-4]
+
+
+    # CPI状況
+    if latest_cpi >= 2.0:
         judgment = "インフレ"
-    elif latest_cpi >= 0.5:
-        judgment = "中立水準"
+    elif latest_cpi >= 0.55:
+        judgment = "横ばい"
     else:
         judgment = "ディスインフレ"
 
-    return latest_cpi, judgment
+
+    # CPIトレンド
+    if cpi_change > 0.2:
+        trend = "インフレ加速傾向"
+    elif cpi_change < -0.2:
+        trend = "インフレ鈍化傾向"
+    else:
+        trend = "横ばい傾向"
+
+    return latest_cpi, cpi_change, judgment, trend
