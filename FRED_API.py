@@ -1,16 +1,29 @@
 from fredapi import Fred
 
+
 def get_cpi_data(api_key):
-    fred = Fred(api_key=api_key)
-    cpi_data = fred.get_series("CPIAUCSL")
-    return cpi_data
+    try:
+        fred = Fred(api_key=api_key)
+        cpi_data = fred.get_series("CPIAUCSL")
+        return cpi_data
+    except Exception as e:
+        print(f"CPIデータの取得に失敗しました：{e}")
+        return None
 
 def get_employment_data(api_key):
-    fred = Fred(api_key=api_key)
-    employment_data = fred.get_series("PAYEMS")
-    return employment_data
+    try:
+        fred = Fred(api_key=api_key)
+        employment_data = fred.get_series("PAYEMS")
+        return employment_data
+    except Exception as e:
+        print(f"雇用データの取得に失敗しました：{e}")
+        return None
 
 def get_rate_data(api_key):
-    fred = Fred(api_key=api_key)
-    rate_data = fred.get_series("FEDFUNDS")
-    return rate_data
+    try:
+        fred = Fred(api_key=api_key)
+        rate_data = fred.get_series("FEDFUNDS")
+        return rate_data
+    except Exception as e:
+        print(f"金利データの取得に失敗しました：{e}")
+        return None

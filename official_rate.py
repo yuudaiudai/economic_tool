@@ -1,6 +1,13 @@
 def analyze_rate(rate_data):
 
+    if rate_data is None or rate_data.empty:
+        return None, "分析不可"
+
     rate_data = rate_data.dropna()
+
+    if rate_data.empty:
+        return None, "分析不可"
+
     latest_rate = rate_data.iloc[-1]
 
     if latest_rate >= 3.75:

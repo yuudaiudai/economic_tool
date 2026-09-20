@@ -1,26 +1,35 @@
 def analyze_investment(cpi_judgment, employment_judgment, rate_judgment):
+    
+    if (
+    cpi_judgment == "分析不可"
+    or employment_judgment == "分析不可"
+    or rate_judgment == "分析不可"
+    ):
+        return None, "分析不可"
 
     score = 0
 
-    # CPIの評価
+    # CPI
     if cpi_judgment == "インフレ":
         score += 1
     elif cpi_judgment == "中立水準":
-        score = 0
-    elif cpi_judgment == "インフレ圧力：低":
+        pass
+    elif cpi_judgment == "ディスインフレ":
         score -= 1
 
-    # 雇用の評価
+    # 雇用
     if employment_judgment == "雇用改善":
         score += 1
+    elif employment_judgment == "雇用変化なし":
+        pass
     elif employment_judgment == "雇用悪化":
         score -= 1
 
-    # 金利の評価
+    # 金利
     if rate_judgment == "高金利":
         score += 1
     elif rate_judgment == "中立金利":
-        score = 0
+        pass
     elif rate_judgment == "低金利":
         score -= 1
 

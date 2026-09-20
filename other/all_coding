@@ -1,0 +1,152 @@
+#FRED_APIファイル
+from fredapi import Fred
+
+def get_cpi_data(api_key):
+    fred = Fred(api_key=api_key)
+    cpi_data = fred.get_series("CPIAUCSL")
+    return cpi_data
+
+def get_employment_data(api_key):
+    fred = Fred(api_key=api_key)
+    employment_data = fred.get_series("PAYEMS")
+    return employment_data
+
+def get_rate_data(api_key):
+    fred = Fred(api_key=api_key)
+    rate_data = fred.get_series("FEDFUNDS")
+    return rate_data
+
+
+#CPI分析ファイル
+def analyze_cpi(cpi_data):
+
+    cpi_yoy = cpi_data.pct_change(12) * 100
+    cpi_yoy = cpi_yoy.dropna()
+    latest_cpi = cpi_yoy.iloc[-1]
+
+    if latest_cpi > 3:
+        judgment = "インフレ"
+    elif latest_cpi >=0.5:
+        judgment = "中立水準"
+    else:
+        judgment = "ディスインフレ"
+
+    return latest_cpi, judgment
+
+
+#雇用統計分析ファイル
+def analyze_employment(employment_data):
+
+    employment_change = employment_data.diff()
+    employment_change = employment_change.dropna()
+    latest_change = employment_change.iloc[-1]
+
+    if latest_change > 0:
+        judgment = "雇用改善"
+    else:
+        judgment = "雇用悪化"
+
+    return latest_change, judgment
+
+
+#政策金利分析ファイル
+def analyze_rate(rate_data):
+
+    rate_data = rate_data.dropna()
+    latest_rate = rate_data.iloc[-1]
+
+    if latest_rate >= 3.75:
+        judgment = "高金利"
+    elif latest_rate >= 2.25:
+        judgment = "中立金利"
+    else:
+        judgment = "低金利"
+
+    return latest_rate, judgment
+
+
+#総合分析ファイル
+def analyze_investment(cpi_judgment, employment_judgment, rate_judgment):
+
+    score = 0
+
+    # CPIの評価
+    if cpi_judgment == "インフレ":
+        score += 1
+    elif cpi_judgment == "中立水準":
+        score = 0
+    elif cpi_judgment == "インフレ圧力：低":
+        score -= 1
+
+    # 雇用の評価
+    if employment_judgment == "雇用改善":
+        score += 1
+    elif employment_judgment == "雇用悪化":
+        score -= 1
+
+    # 金利の評価
+    if rate_judgment == "高金利":
+        score += 1
+    elif rate_judgment == "中立金利":
+        score = 0
+    elif rate_judgment == "低金利":
+        score -= 1
+
+    # 総合判断
+    if score >= 2:
+        overall_judgment = "好景気"
+    elif score <= -2:
+        overall_judgment = "悪景気"
+    else:
+        overall_judgment = "中立景気"
+
+    return score, overall_judgment
+
+
+#mainファイル
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
+API_KEY = os.getenv("FRED_API_KEY")
+
+from FRED_API import get_cpi_data, get_employment_data, get_rate_data
+from cpi import analyze_cpi
+from employment import analyze_employment
+from official_rate import analyze_rate
+from overall_analyze import analyze_investment
+
+#CPi分析
+cpi_data = get_cpi_data(API_KEY)
+
+latest_cpi, cpi_judgment = analyze_cpi(cpi_data)
+
+print(f"CPI前年比：{latest_cpi:.2f}%")
+print(f"CPI状況：{cpi_judgment}")
+
+#雇用分析
+employment_data = get_employment_data(API_KEY)
+
+latest_change, employment_judgment = analyze_employment(employment_data)
+
+print(f"雇用者数の前月比：{latest_change:.0f}千人")
+print(f"雇用状況：{employment_judgment}")
+
+#金利分析
+rate_data = get_rate_data(API_KEY)
+
+latest_rate, rate_judgment = analyze_rate(rate_data)
+
+print(f"政策金利：{latest_rate:.2f}%")
+print(f"金利状況：{rate_judgment}")
+
+#総合分析
+score, overall_judgment = analyze_investment(
+    cpi_judgment,
+    employment_judgment,
+    rate_judgment
+)
+
+print(f"総合スコア：{score}")
+print(f"総合分析：{overall_judgment}")
