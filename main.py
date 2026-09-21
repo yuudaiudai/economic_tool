@@ -28,7 +28,6 @@ from graph import (
     plot_rate
 )
 
-
 #CPI分析
 cpi_data = get_cpi_data(API_KEY)
 
@@ -48,7 +47,7 @@ if cpi_judgment != "分析不可":
 else:
     print("CPI分析：分析不可")
 
-#雇用分析
+# 雇用分析
 employment_data, unemployment_data, hourly_earnings = get_employment_data(API_KEY)
 
 (
@@ -92,7 +91,7 @@ if employment_judgment != "分析不可":
 else:
     print("雇用分析：分析不可")
 
-#金利分析
+# 金利分析
 rate_data = get_rate_data(API_KEY)
 
 (
@@ -116,9 +115,8 @@ if rate_judgment != "分析不可":
 )
 else:
     print("金利分析：分析不可")
-    
 
-#総合分析
+# 総合分析
 score, overall_judgment = analyze_investment(
     cpi_judgment,
     cpi_trend,
@@ -127,10 +125,8 @@ score, overall_judgment = analyze_investment(
     rate_judgment
 )
 
-
 print(f"総合スコア：{score}")
 print(f"総合分析：{overall_judgment}")
-
 
 # 過去の分析結果と比較
 compare_with_previous(
@@ -154,7 +150,7 @@ changes = detect_economic_changes(
     overall_judgment
 )
 
-# 分析レポートを作成
+# 分析レポート作成
 generate_report(
     cpi_judgment,
     cpi_trend,

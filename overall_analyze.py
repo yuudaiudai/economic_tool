@@ -6,8 +6,7 @@ def analyze_investment(
     rate_judgment
 ):
 
-
-    # 入力値チェック
+    # 入力値の確からしさチェック
     if (
         cpi_judgment == "分析不可"
         or employment_judgment == "分析不可"
@@ -17,8 +16,7 @@ def analyze_investment(
 
     score = 0
 
-
-    # CPI
+    # CPIスコア
     cpi_score = 0
 
     # CPIの状態
@@ -28,15 +26,14 @@ def analyze_investment(
         cpi_score -= 1
 
     # CPIのトレンド
-    if cpi_trend == "インフレ傾向":
+    if cpi_trend == "インフレ加速傾向":
         cpi_score += 1
-    elif cpi_trend == "ディスインフレ傾向":
+    elif cpi_trend == "インフレ鈍化傾向":
         cpi_score -= 1
 
     score += cpi_score
-    
 
-    # 雇用
+    # 雇用スコア
     employment_score = 0
 
     # 雇用の状態
@@ -53,8 +50,7 @@ def analyze_investment(
 
     score += employment_score
     
-
-    # 金利
+    # 金利スコア
     rate_score = 0
 
     # 金融政策
@@ -64,7 +60,6 @@ def analyze_investment(
         rate_score -= 1
         
     score += rate_score
-
 
     # 総合判断
     if score >= 4:

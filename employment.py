@@ -1,3 +1,19 @@
+from config import (
+    EMPLOYMENT_YOY_THRESHOLD,
+    UNEMPLOYMENT_YOY_THRESHOLD,
+    WAGE_IMPROVEMENT_THRESHOLD,
+    WAGE_DECLINE_THRESHOLD,
+    EMPLOYMENT_IMPROVEMENT_SCORE_THRESHOLD,
+    EMPLOYMENT_DECLINE_SCORE_THRESHOLD,
+    EMPLOYMENT_TREND_INCREASE_THRESHOLD,
+    EMPLOYMENT_TREND_DECREASE_THRESHOLD,
+    UNEMPLOYMENT_TREND_IMPROVEMENT_THRESHOLD,
+    UNEMPLOYMENT_TREND_DECLINE_THRESHOLD,
+    WAGE_TREND_INCREASE_THRESHOLD,
+    WAGE_TREND_DECREASE_THRESHOLD
+)
+
+
 def analyze_employment(employment_data, unemployment_data, hourly_earnings):
 
     if (
@@ -38,28 +54,28 @@ def analyze_employment(employment_data, unemployment_data, hourly_earnings):
         - hourly_earnings_yoy.iloc[-4]
     )
 
-
-
-    # 雇用状況
+    # 雇用者数スコア
     employment_score = 0
 
-    if latest_employment_yoy >= 0:
+    if latest_employment_yoy >= EMPLOYMENT_YOY_THRESHOLD:
         employment_score += 1
     else:
         employment_score -= 1
-
+        
+    # 失業率スコア
     unemployment_score = 0
 
-    if latest_unemployment_yoy < 0:
+    if latest_unemployment_yoy <= UNEMPLOYMENT_YOY_THRESHOLD:
         unemployment_score += 1
-    elif latest_unemployment_yoy > 0:
+    elif latest_unemployment_yoy > UNEMPLOYMENT_YOY_THRESHOLD:
         unemployment_score -= 1
-
+        
+    # 平均時給スコア
     wage_score = 0
 
-    if latest_hourly_earnings_yoy >= 3:
+    if latest_hourly_earnings_yoy >= WAGE_IMPROVEMENT_THRESHOLD:
         wage_score += 1
-    elif latest_hourly_earnings_yoy < 0:
+    elif latest_hourly_earnings_yoy < WAGE_DECLINE_THRESHOLD:
         wage_score -= 1
 
     # 雇用総合スコア
@@ -70,34 +86,32 @@ def analyze_employment(employment_data, unemployment_data, hourly_earnings):
     )
 
     # 雇用総合判断
-    if employment_score_total >= 2:
+    if employment_score_total >= EMPLOYMENT_IMPROVEMENT_SCORE_THRESHOLD:
         employment_judgment = "雇用改善"
-    elif employment_score_total <= -2:
+    elif employment_score_total <= EMPLOYMENT_DECLINE_SCORE_THRESHOLD:
         employment_judgment = "雇用悪化"
     else:
-        employment_judgment = "雇用中立"
+        employment_judgment = "雇用横ばい"
 
-
-
-    # 雇用のトレンド
+    # 雇用トレンドスコア
     trend_score = 0
 
-    # 雇用者数
-    if employment_change > 0.2:
+    # 雇用者数3ヶ月前比
+    if employment_change > EMPLOYMENT_TREND_INCREASE_THRESHOLD:
         trend_score += 1
-    elif employment_change < -0.2:
+    elif employment_change < EMPLOYMENT_TREND_DECREASE_THRESHOLD:
         trend_score -= 1
 
-    # 失業率
-    if unemployment_change < -0.2:
+    # 失業率3ヶ月前比
+    if unemployment_change < UNEMPLOYMENT_TREND_IMPROVEMENT_THRESHOLD:
         trend_score += 1
-    elif unemployment_change > 0.2:
+    elif unemployment_change > UNEMPLOYMENT_TREND_DECLINE_THRESHOLD:
         trend_score -= 1
 
-    # 平均時給
-    if hourly_earnings_change > 0.2:
+    # 平均時給3ヶ月前比
+    if hourly_earnings_change > WAGE_TREND_INCREASE_THRESHOLD:
         trend_score += 1
-    elif hourly_earnings_change < -0.2:
+    elif hourly_earnings_change < WAGE_TREND_DECREASE_THRESHOLD:
         trend_score -= 1
 
     # 雇用トレンド総合判断

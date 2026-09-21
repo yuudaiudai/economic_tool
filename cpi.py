@@ -1,3 +1,11 @@
+from config import (
+    CPI_INFLATION_THRESHOLD,
+    CPI_DISINFLATION_THRESHOLD,
+    CPI_TREND_INCREASE_THRESHOLD,
+    CPI_TREND_DECREASE_THRESHOLD
+)
+
+
 def analyze_cpi(cpi_data):
 
     if cpi_data is None or cpi_data.empty:
@@ -20,20 +28,18 @@ def analyze_cpi(cpi_data):
     # CPI3か月前比
     cpi_change = latest_cpi - cpi_yoy.iloc[-4]
 
-
     # CPI状況
-    if latest_cpi >= 2.0:
+    if latest_cpi >= CPI_INFLATION_THRESHOLD:
         judgment = "インフレ"
-    elif latest_cpi >= 0.55:
+    elif latest_cpi >= CPI_DISINFLATION_THRESHOLD:
         judgment = "横ばい"
     else:
         judgment = "ディスインフレ"
 
-
     # CPIトレンド
-    if cpi_change > 0.2:
+    if cpi_change > CPI_TREND_INCREASE_THRESHOLD:
         trend = "インフレ加速傾向"
-    elif cpi_change < -0.2:
+    elif cpi_change < CPI_TREND_DECREASE_THRESHOLD:
         trend = "インフレ鈍化傾向"
     else:
         trend = "横ばい傾向"
