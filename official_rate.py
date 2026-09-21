@@ -11,10 +11,10 @@ def analyze_rate(rate_data):
     # 最新の政策金利
     latest_rate = rate_data.iloc[-1]
 
-    # 1年前との金利差
+    # 前年比ベースの金利差
     rate_change = latest_rate - rate_data.iloc[-13]
 
-    # 3か月前との金利差
+    # 3か月前比ベースの金利差
     rate_change_3m = latest_rate - rate_data.iloc[-4]
 
 
@@ -37,19 +37,18 @@ def analyze_rate(rate_data):
     # 金利スコア
     rate_score = 0
 
-    # 金利水準
+    # 金利評価
     if rate_level == "高金利":
         rate_score += 1
     elif rate_level == "低金利":
         rate_score -= 1
 
-    # 金利トレンド
+    # 金利トレンド評価
     if rate_trend == "利上げ":
         rate_score += 1
     elif rate_trend == "利下げ":
         rate_score -= 1
         
-
     # 金融政策判断
     if rate_score >= 1:
         rate_judgment = "金融引き締め"

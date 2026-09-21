@@ -14,6 +14,12 @@ from cpi import analyze_cpi
 from employment import analyze_employment
 from official_rate import analyze_rate
 from overall_analyze import analyze_investment
+from report import generate_report
+from history import (
+    save_analysis_result,
+    compare_with_previous,
+    detect_economic_changes
+)
 from graph import (
     plot_cpi,
     plot_employment,
@@ -124,3 +130,49 @@ score, overall_judgment = analyze_investment(
 
 print(f"総合スコア：{score}")
 print(f"総合分析：{overall_judgment}")
+
+
+# 過去の分析結果と比較
+compare_with_previous(
+    cpi_judgment,
+    cpi_trend,
+    employment_judgment,
+    employment_trend,
+    rate_judgment,
+    score,
+    overall_judgment
+)
+
+# 経済状態の変化を検出
+changes = detect_economic_changes(
+    cpi_judgment,
+    cpi_trend,
+    employment_judgment,
+    employment_trend,
+    rate_judgment,
+    score,
+    overall_judgment
+)
+
+# 分析レポートを作成
+generate_report(
+    cpi_judgment,
+    cpi_trend,
+    employment_judgment,
+    employment_trend,
+    rate_judgment,
+    score,
+    overall_judgment,
+    changes
+)
+
+# 分析結果をcsvに保存
+save_analysis_result(
+    cpi_judgment,
+    cpi_trend,
+    employment_judgment,
+    employment_trend,
+    rate_judgment,
+    score,
+    overall_judgment
+)
